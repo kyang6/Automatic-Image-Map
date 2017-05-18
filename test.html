@@ -1,0 +1,65 @@
+<html><head>
+	<meta charset="utf-8">
+	<title>Responsive Image Maps jQuery Plugin</title>
+
+
+	<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+	}
+	h1 {
+		font-size: 20px;
+	}
+	div {
+		width: 100%;
+	}
+	img[usemap] {
+		border: none;
+		height: auto;
+		max-width: 100%;
+		width: auto;
+	}
+	</style>
+</head>
+<body>
+<div>
+	
+	<img src="cat_dog.jpg" width="900" height="599" usemap="#labeled_dog_cat" alt="">
+	<map name="labeled_dog_cat">
+		<area shape="rect" coords="93,136,433,566" alt="cat">
+		<area shape="rect" coords="401,36,882,558" alt="dog">
+	</map>
+
+	<img src="christmas.jpg" width="7911" height="5277" usemap="#labeled_christmas" alt="">
+	<map name="labeled_christmas">
+		<area shape="rect" coords="3842,2716,4206,3280" alt="tie">
+		<area shape="rect" coords="1275,1723,3252,5276" alt="person 1">
+		<area shape="rect" coords="2817,1629,5112,5275" alt="person 2">
+		<area shape="rect" coords="4563,2122,6646,5276" alt="person 3">
+		
+		<area shape="rect" coords="2821,0,5275,2838" alt="christmas tree">
+	</map>
+
+
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="jquery.rwdImageMaps.min.js"></script>
+<script>
+
+// [{'topleft': {'y': 136, 'x': 93}, 'confidence': 0.82764685, 'bottomright': {'y': 566, 'x': 433}, 'label': 'cat'}, {'topleft': {'y': 36, 'x': 401}, 'confidence': 0.84778845, 'bottomright': {'y': 558, 'x': 882}, 'label': 'dog'}]
+
+
+// [{'topleft': {'y': 1723, 'x': 1275}, 'confidence': 0.86230516, 'bottomright': {'y': 5276, 'x': 3252}, 'label': 'person'}, {'topleft': {'y': 1629, 'x': 2817}, 'confidence': 0.87317395, 'bottomright': {'y': 5276, 'x': 5112}, 'label': 'person'}, {'topleft': {'y': 2122, 'x': 4563}, 'confidence': 0.78930086, 'bottomright': {'y': 5276, 'x': 6646}, 'label': 'person'}, {'topleft': {'y': 2716, 'x': 3842}, 'confidence': 0.26768887, 'bottomright': {'y': 3280, 'x': 4206}, 'label': 'tie'}, {'topleft': {'y': 0, 'x': 2821}, 'confidence': 0.38086066, 'bottomright': {'y': 2838, 'x': 5275}, 'label': 'pottedplant'}]
+
+$(document).ready(function(e) {
+	$('img[usemap]').rwdImageMaps();
+	
+	$('area').on('click', function() {
+		alert($(this).attr('alt') + ' clicked');
+	});
+});
+</script>
+
+
+</body></html>
