@@ -8,7 +8,9 @@
 * http://mattstow.com
 * Licensed under the MIT license
 */
+// passing jquery in
 ;(function($) {
+	// prototype
 	$.fn.rwdImageMaps = function() {
 		var $img = this;
 

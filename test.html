@@ -26,17 +26,17 @@
 	
 	<img src="cat_dog.jpg" width="900" height="599" usemap="#labeled_dog_cat" alt="image of a cat and a dog">
 	<map name="labeled_dog_cat">
-		<area shape="rect" href="#" coords="93,136,433,566" alt="cat">
-		<area shape="rect" href="#" coords="401,36,882,558" alt="dog">
+		<area shape="rect" href="#cat" onclick="return false;" coords="93,136,433,566" alt="cat">
+		<area shape="rect"  coords="401,36,882,558" alt="dog">
 	</map>
 
 	<img src="christmas.jpg" width="7911" height="5277" usemap="#labeled_christmas" alt="image of the yang family in front of a christmas tree">
 	<map name="labeled_christmas">
-		<area shape="rect" href="#" coords="3842,2716,4206,3280" alt="tie">
-		<area shape="rect" href="#" coords="1275,1723,3252,5276" alt="Kevin">
-		<area shape="rect" href="#" coords="2817,1629,5112,5275" alt="Peichun">
-		<area shape="rect" href="#" coords="4563,2122,6646,5276" alt="Wei">
-		<area shape="rect" href="#" coords="2821,0,5275,2838" alt="christmas tree">
+		<area shape="rect" href="#tie" coords="3842,2716,4206,3280" alt="tie">
+		<area shape="rect" href="#Kevin" coords="1275,1723,3252,5276" alt="Kevin">
+		<area shape="rect" href="#Peichun" coords="2817,1629,5112,5275" alt="Peichun">
+		<area shape="rect" href="#Wei" coords="4563,2122,6646,5276" alt="Wei">
+		<area shape="rect" href="#christmas_tree" coords="2821,0,5275,2838" alt="christmas tree">
 	</map>
 
 </div>
@@ -54,6 +54,8 @@
 // [{'topleft': {'y': 1723, 'x': 1275}, 'confidence': 0.86230516, 'bottomright': {'y': 5276, 'x': 3252}, 'label': 'person'}, {'topleft': {'y': 1629, 'x': 2817}, 'confidence': 0.87317395, 'bottomright': {'y': 5276, 'x': 5112}, 'label': 'person'}, {'topleft': {'y': 2122, 'x': 4563}, 'confidence': 0.78930086, 'bottomright': {'y': 5276, 'x': 6646}, 'label': 'person'}, {'topleft': {'y': 2716, 'x': 3842}, 'confidence': 0.26768887, 'bottomright': {'y': 3280, 'x': 4206}, 'label': 'tie'}, {'topleft': {'y': 0, 'x': 2821}, 'confidence': 0.38086066, 'bottomright': {'y': 2838, 'x': 5275}, 'label': 'pottedplant'}]
 
 $(document).ready(function(e) {
+	// first dynamically add the image_maps
+	// then make the image maps responsive
 	$('img[usemap]').rwdImageMaps();
 	
 	$('area').on('click', function() {
