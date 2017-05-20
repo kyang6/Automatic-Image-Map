@@ -13,7 +13,7 @@
 	div {
 		width: 100%;
 	}
-	img[usemap] {
+	img {
 		border: none;
 		height: auto;
 		max-width: 100%;
@@ -24,28 +24,28 @@
 <body>
 <div>
 	
-	<a href="shitter"><img src="cat_dog.jpg" width="900" height="599" usemap="#labeled_dog_cat" alt="image of a cat and a dog"></a>
-	<map name="labeled_dog_cat">
+	<img src="cat_dog.jpg"  alt="image of a cat and a dog">
+	<!-- <map name="labeled_dog_cat">
 		<area shape="rect" href="#cat" onclick="return false;" coords="93,136,433,566" alt="cat">
 		<area shape="rect" href="#dog" onclick="return false;" coords="401,36,882,558" alt="dog">
-	</map>
+	</map> -->
 
-	<img src="christmas.jpg" href="/" width="7911" height="5277" usemap="#labeled_christmas" alt="image of the yang family in front of a christmas tree">
-	<map name="labeled_christmas">
+	<img src="christmas.jpg" href="/" width="7911" height="5277"  alt="image of the yang family in front of a christmas tree">
+	<!-- <map name="labeled_christmas">
 		<area shape="rect" href="#tie"  onclick="return false;" coords="3842,2716,4206,3280" alt="tie">
 		<area shape="rect" href="#Kevin"  onclick="return false;" coords="1275,1723,3252,5276" alt="Kevin">
 		<area shape="rect" href="#Peichun"  onclick="return false;" coords="2817,1629,5112,5275" alt="Peichun">
 		<area shape="rect" href="#Wei"  onclick="return false;" coords="4563,2122,6646,5276" alt="Wei">
 		<area shape="rect" href="#christmas_tree"  onclick="return false;" coords="2821,0,5275,2838" alt="christmas tree">
-	</map>
+	</map> -->
 
 </div>
 
 <script src="AutomaticImageMaps.js"></script>
-<script src="ResponsiveImageMaps.js"></script>
+
+<!-- <script src="ResponsiveImageMaps.js"></script> -->
 
 <script>
-
 // [{'topleft': {'y': 136, 'x': 93}, 'confidence': 0.82764685, 'bottomright': {'y': 566, 'x': 433}, 'label': 'cat'}, {'topleft': {'y': 36, 'x': 401}, 'confidence': 0.84778845, 'bottomright': {'y': 558, 'x': 882}, 'label': 'dog'}]
 
 
