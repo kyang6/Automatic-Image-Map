@@ -1,27 +1,145 @@
 /*
+ * AutoImageMaps
+ *      Automatically label the objects in an image and create Image Maps for accessibility
  *
- * Automatically label the objects in an image and create Image Maps for accessibility
+ * Kevin Yang
  *
  */
 
-
-function _automaticallyCreateLabels(src) {
-   
-    
-	return [{'topleft': {'y': 1723, 'x': 1275}, 'confidence': 0.86230516, 'bottomright': {'y': 5276, 'x': 3252}, 'label': 'person'}, {'topleft': {'y': 1629, 'x': 2817}, 'confidence': 0.87317395, 'bottomright': {'y': 5276, 'x': 5112}, 'label': 'person'}, {'topleft': {'y': 2122, 'x': 4563}, 'confidence': 0.78930086, 'bottomright': {'y': 5276, 'x': 6646}, 'label': 'person'}, {'topleft': {'y': 2716, 'x': 3842}, 'confidence': 0.26768887, 'bottomright': {'y': 3280, 'x': 4206}, 'label': 'tie'}, {'topleft': {'y': 0, 'x': 2821}, 'confidence': 0.38086066, 'bottomright': {'y': 2838, 'x': 5275}, 'label': 'pottedplant'}]
-	// return [{'topleft': {'y': 136, 'x': 93}, 'confidence': 0.82764685, 'bottomright': {'y': 566, 'x': 433}, 'label': 'cat'}, {'topleft': {'y': 36, 'x': 401}, 'confidence': 0.84778845, 'bottomright': {'y': 558, 'x': 882}, 'label': 'dog'}]
-	// return false;
+/*
+ * private function randInt()
+ * ----------------------------------
+ * Returns a random integer between min and max
+ *
+ * Inputs:
+ *   min    - lower bound
+ *   max    - upper bound
+ * Outputs:
+ *   int    - random integer between min and max
+ */
+function _randInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// Add attribute to an element
-function _addAttribute(element, attribute, value) {
+/*
+ * private function _createImageMap()
+ * ----------------------------------
+ * Create an image map and add it below the input img
+ *
+ * Inputs:
+ *   img     - image object that map is being created for
+ *   img_src - source of the image in the img object
+ *   labels  - labels of objects detected in img
+ * Outputs:
+ *   void
+ */
+function _createImageMap(img, img_src, labels) {
+    if (!labels.length) { return; }
+
+    var image_href = "";
+    // If the image has a link, then set all the links in the image map to be that link
+    if (img.parentElement.tagName === "A"){
+        image_href = img.parentElement.href;
+    } else {
+        image_href = null;
+    }
+
+    var newMap = document.createElement("map"); 
+
+    var randomHash = _randInt(0, 10000);
+    // Add usemap attribute- set to #labeled_{img_src}
+    _addAttribute(img, "usemap", "#labeled_"+randomHash+img_src); 
+    _addAttribute(newMap, "name", "labeled_"+randomHash+img_src);
+
+    
+    labels.forEach(function (label) {
+        var newArea = document.createElement("area");
+        _addAttribute(newArea, "shape", "rect");
+        
+        // if the image is wrapped in a link set all the area to that link
+        // otherwise set a dummy link
+        // need to have link for voiceover to read!
+        if (image_href) {
+            _addAttribute(newArea, "href", image_href);
+        } else {
+            _addAttribute(newArea, "href", "#"+label['label']);
+            // workaround to disable clicking on image maps
+            _addAttribute(newArea, "onclick", "return false;");
+        }
+
+        var x1 = label['topleft']['x'],
+            y1 = label['topleft']['y'],
+            x2 = label['bottomright']['x'],
+            y2 = label['bottomright']['y'];
+
+        _addAttribute(newArea, "coords", [x1,y1,x2,y2].join());
+        _addAttribute(newArea, "alt", label['label']);
+
+        newMap.appendChild(newArea);
+    });
+    _insertAfter(newMap, img);
+}
+
+/*
+ * private function _automaticallyCreateLabels()
+ * ----------------------------------
+ * Calls librarylyna.com/api/auto-image-map to generate labels for the input image
+ * Asynchronous- calls _createImageMap() and imageMapResize after a successful response
+ *
+ * Inputs:
+ *   img     - image object that map is being created for
+ *   img_src - source of the image in the img object
+ * Outputs:
+ *   void
+ */
+function _automaticallyCreateLabels(img, image_src) {
+    var url = 'http://localhost:5000/api/auto-image-map/?url='+image_src;
+
+    fetch(url, {method:'GET'}).then(function(response) { 
+        return response.json();
+    }).then(function(resp) {
+        var labels = resp['labels']; 
+        _createImageMap(img, image_src, labels);
+
+        // When image map is done is loaded make all image maps responsive
+        imageMapResize();
+    }).catch(function(err) {
+        console.log(err);
+    });
+}
+
+/*
+ * private helper function _addAttribute()
+ * ----------------------------------
+ * Decomposes adding an attribute to an element
+ *
+ * Inputs:
+ *   el   - element to add attribute to
+ *   attribute - name of the attribute being added
+ *   value     - value of the attribute being added
+ * Outputs:
+ *   el   - element with the attribute added
+ */
+function _addAttribute(el, attribute, value) {
 	var attr = document.createAttribute(attribute);       
 	attr.value = value;
-	element.setAttributeNode(attr);
-	return element;
+	el.setAttributeNode(attr);
+	return el;
 }
 
-// Insert a node after another
+/*
+ * private helper function _insertAfter()
+ * ----------------------------------
+ * Decomposes inserting a node after a reference element
+ *
+ * Inputs:
+ *   el            - element reference will be added after
+ *   referenceNode - node that is being added
+ * Outputs:
+ *   void
+ */
 function _insertAfter(el, referenceNode) {
     referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
 }
@@ -151,8 +269,17 @@ function _insertAfter(el, referenceNode) {
 })();
 
 
-// Automatically generate and apply image maps to images
-var generateImageMaps = function (selector) {
+/*
+ * public function generateImageMaps()
+ * ----------------------------------
+ * Generates image maps of labels for all the images in a HTML page
+ *
+ * Inputs:
+ *   selector  - HTML tag selector to specify what elements will be used
+ * Outputs:
+ *   void
+ */
+function generateImageMaps(selector) {
     var self = this;
 
     if (!self) { return new ImageMap(selector); }
@@ -163,57 +290,14 @@ var generateImageMaps = function (selector) {
         self.selector.forEach(function (val) {
             var img = val;
 			var img_src = img.src;
-			labels = _automaticallyCreateLabels(img_src);
-            console.log("labels" + labels);
-
-			if (!labels) { return; }
-
-            var image_href = "";
-            // If the image has a link, then set all the links in the image map to be that link
-            if (img.parentElement.tagName === "A"){
-            	image_href = img.parentElement.href;
-            } else {
-            	image_href = null;
-            }
-
-			var newMap = document.createElement("map");	
-            // Add usemap attribute- set to #labeled_{img_src}
-            _addAttribute(img, "usemap", "#labeled_"+img_src); 
-        	_addAttribute(newMap, "name", "labeled_"+img_src);
-		
-            labels.forEach(function (label) {
-            	var newArea = document.createElement("area");
-				_addAttribute(newArea, "shape", "rect");
-				
-				// if the image is wrapped in a link set all the area to that link
-				// otherwise set a dummy link
-				// need to have link for voiceover to read!
-				if (image_href) {
-					_addAttribute(newArea, "href", image_href);
-				} else {
-					_addAttribute(newArea, "href", "#"+label['label']);
-					_addAttribute(newArea, "onclick", "return false;");
-				}
-
-				var x1 = label['topleft']['x'],
-					y1 = label['topleft']['y'],
-					x2 = label['bottomright']['x'],
-					y2 = label['bottomright']['y'] ;
-				_addAttribute(newArea, "coords", [x1,y1,x2,y2].join());
-				_addAttribute(newArea, "alt", label['label']);
-
-				newMap.appendChild(newArea);
-            });
-            _insertAfter(newMap, img);
+            _automaticallyCreateLabels(img, img_src);
         });
     })();
-	imageMapResize();
+	
 };
 
-// When document is loaded make all image maps responsive
-document.onreadystatechange = () => {
-  if (document.readyState === 'complete') {
-    generateImageMaps('img');
-  }
-};
+generateImageMaps('img');
+
+
+
 

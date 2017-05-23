@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='slightbox.css' rel='stylesheet' type='text/css'>
+    
+    <title>Slightbox | An accessible, lightweight lightbox in vanilla JavaScript</title>
+    <style>
+        .slightbox-container a {
+            display: inline-block;
+            max-width: 20%;
+        }
+        
+        .slightbox-container a img {
+            max-width: 100%;   
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Slightbox</h1>
+    <h2>An accessible, lightweight lightbox in vanilla JavaScript</h2>
+    <p>Features:</p>
+    <ul>
+        <li>Around 8kb minified</li>
+        <li>No need for jQuery or any other library</li>
+        <li>Mobile and touch-friendly</li>
+        <li>Accessible and keyboard friendly</li>
+        <li>Minimal styling—customize look and feel with CSS</li>
+    </ul>
+            
+    <div class="slightbox-container">
+        
+        <a href="img/18H.jpg"><img src="cat_dog.jpg"  alt="image of a cat and a dog"></a>
+        <a href="img/35H.jpg"><img src="christmas.jpg" href="/" width="7911" height="5277"  alt="image of the yang family in front of a christmas tree"></a>
+        
+
+
+    </div><!-- end slighbox-container -->
+
+
+    
+    <p>All images courtesy of <a href="http://www.gratisography.com">http://www.gratisography.com</a>.</p>
+    
+    <script src="slightbox.js"></script>
+    <script>slightBox.make();</script>
+    <script src="AutomaticImageMapsAsync.js"></script>
+    
+</body>
+</html>
